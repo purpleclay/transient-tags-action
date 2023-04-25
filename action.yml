@@ -1,0 +1,20 @@
+name: "Transient Tags Action"
+description: "GitHub Action to parse the latest tag from a repository into component parts for use as transient tags"
+author: "purpleclay"
+branding:
+  color: "purple"
+  icon: "tag"
+inputs:
+  force-semver:
+    description: "set to 'true' if explicit semantic versioning is required"
+    required: false
+outputs:
+  full:
+    description: "the latest detected version tag e.g. v1.2.3"
+  major:
+    description: "the latest major tag e.g. v1"
+  minor:
+    description: "the latest minor tag e.g. v1.2"
+runs:
+  using: "node16"
+  main: "dist/index.js"
