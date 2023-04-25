@@ -1,7 +1,7 @@
 {
     "name": "transient-tags-action",
     "version": "1.0.0",
-    "description": "GitHub action for",
+    "description": "GitHub Action for generating transient tags from the latest repository version",
     "main": "lib/main.js",
     "scripts": {
         "build": "tsc && ncc build",
