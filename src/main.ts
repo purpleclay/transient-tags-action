@@ -31,9 +31,9 @@ async function run(): Promise<void> {
     const path = await installer.downloadTT(version)
     const out = await runTT(path, forceSemVer)
 
-    core.setOutput("full", out.Full);
-    core.setOutput("major", out.Major);
-    core.setOutput("minor", out.Minor);
+    core.setOutput('full', out.Full)
+    core.setOutput('major', out.Major)
+    core.setOutput('minor', out.Minor)
   } catch (error) {
     const err = error as Error
     core.setFailed(err.message)
@@ -41,13 +41,13 @@ async function run(): Promise<void> {
 }
 
 type Out = {
-  Full: String
-  Major: String
-  Minor: String
+  Full: string
+  Major: string
+  Minor: string
 }
 
-async function runTT(path: String, forceSemVer: Boolean): Promise<Out> {
-  const env = { TT_SEMVER: forceSemVer ? '1' : '0', ...process.env }
+async function runTT(path: string, forceSemVer: boolean): Promise<Out> {
+  const env = {TT_SEMVER: forceSemVer ? '1' : '0', ...process.env}
 
   // Ensure the output is captured
   let output = ''
@@ -63,7 +63,7 @@ async function runTT(path: String, forceSemVer: Boolean): Promise<Out> {
   })
 
   const parts = output.split(',', 3)
-  return { Full: parts[0], Major: parts[1], Minor: parts[2] }
+  return {Full: parts[0], Major: parts[1], Minor: parts[2]}
 }
 
 run()
