@@ -32,32 +32,32 @@ export interface GithubTag {
 }
 
 export async function downloadTT(version: string): Promise<string> {
-  core.info(`🔍 searching Github for tt version: ${version}`)
+  core.info(`Searching Github for tt version: ${version}`)
   const result = await queryVersion(version)
   if (!result) {
     throw new Error(`Cannot download tt version '${version}' from Github`)
   }
-  core.info(`✅ tt version found: ${result.tag_name}`)
+  core.info(`Found tt version: ${result.tag_name}`)
 
   // Having verified the version. Download it.
   const filename = getFilename(result.tag_name)
 
-  core.info(`⬇️ downloading tt version: ${result.tag_name}`)
+  core.info(`Downloading tt version: ${result.tag_name}`)
   const toolPath = await cache.downloadTool(
     `https://github.com/purpleclay/tt/releases/download/${result.tag_name}/${filename}`
   )
 
   // Unpack and cache the binary
-  core.info('📦 extracting tt binary from package')
+  core.debug('Extracting tt binary from package')
   const extractPath = await cache.extractTar(toolPath)
-  core.debug(`📁 extracted to: ${extractPath}`)
+  core.debug(`Extracted to: ${extractPath}`)
 
   const cachePath = await cache.cacheDir(
     extractPath,
     'tt',
     result.tag_name.replace('/^v/', '')
   )
-  core.debug(`🗄️ tt binary cached at: ${cachePath}`)
+  core.debug(`Binary cached at: ${cachePath}`)
 
   return path.join(cachePath, 'tt')
 }
@@ -70,7 +70,7 @@ const queryVersion = async (version: string): Promise<GithubTag | null> => {
   } else {
     url = `https://api.github.com/repos/purpleclay/tt/releases/tags/${version}`
   }
-  core.debug(`🌐 identified Github URL for download: ${url}`)
+  core.debug(`Identified Github URL for download: ${url}`)
 
   const http = new client.HttpClient('transient-tags-action')
 

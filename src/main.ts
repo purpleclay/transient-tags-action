@@ -31,7 +31,6 @@ async function run(): Promise<void> {
     const path = await installer.downloadTT(version)
     const out = await runTT(path, forceSemVer)
 
-    core.setOutput('full', out.Full)
     core.setOutput('major', out.Major)
     core.setOutput('minor', out.Minor)
   } catch (error) {
@@ -41,7 +40,6 @@ async function run(): Promise<void> {
 }
 
 type Out = {
-  Full: string
   Major: string
   Minor: string
 }
@@ -52,7 +50,7 @@ async function runTT(path: string, forceSemVer: boolean): Promise<Out> {
   // Ensure the output is captured
   let output = ''
 
-  core.info('🏷️ Running tt')
+  core.info('Running tt')
   await exec.exec(`${path}`, [], {
     env,
     listeners: {
@@ -63,7 +61,7 @@ async function runTT(path: string, forceSemVer: boolean): Promise<Out> {
   })
 
   const parts = output.split(',', 3)
-  return {Full: parts[0], Major: parts[1], Minor: parts[2]}
+  return {Major: parts[1], Minor: parts[2]}
 }
 
 run()
