@@ -76,7 +76,11 @@ const queryVersion = async (version: string): Promise<GithubTag | null> => {
 
   const http = new client.HttpClient('transient-tags-action')
 
-  return (await http.getJson<GithubTag>(url, { "Authorization": `Bearer ${process.env.GITHUB_TOKEN}` })).result
+  return (
+    await http.getJson<GithubTag>(url, {
+      Authorization: `Bearer ${process.env['GITHUB_TOKEN']}`
+    })
+  ).result
 }
 
 const getFilename = (version: string): string => {
