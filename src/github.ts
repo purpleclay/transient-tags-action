@@ -83,6 +83,8 @@ const getFilename = (version: string): string => {
   // Map the arch to supported values within the github release artifacts
   let arch = ''
   let extension = 'tar.gz'
+  let platform = osPlatform
+
   switch (osArch) {
     case 'x64':
       arch = 'x86_64'
@@ -91,7 +93,8 @@ const getFilename = (version: string): string => {
       arch = osArch
   }
 
-  if (osPlatform === 'win32') {
+  if (platform === 'win32') {
+    platform = 'windows'
     extension = 'zip'
   }
 
