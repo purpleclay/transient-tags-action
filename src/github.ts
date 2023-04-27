@@ -32,8 +32,6 @@ export interface GithubTag {
 }
 
 export async function downloadTT(version: string): Promise<string> {
-  core.info(`identified platform ${osPlatform}`)
-
   core.info(`Searching Github for tt version: ${version}`)
   const result = await queryVersion(version)
   if (!result) {
@@ -93,7 +91,7 @@ const getFilename = (version: string): string => {
       arch = osArch
   }
 
-  if (osPlatform == 'windows') {
+  if (osPlatform === 'windows') {
     extension = 'zip'
   }
 
