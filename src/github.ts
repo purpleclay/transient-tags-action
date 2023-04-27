@@ -98,5 +98,5 @@ const getFilename = (version: string): string => {
     extension = 'zip'
   }
 
-  return `tt_${version.replace(/^v/, '')}_${osPlatform}_${arch}.${extension}`
+  return `tt_${version.replace(/^v/, '')}_${platform}_${arch}.${extension}`
 }
