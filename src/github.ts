@@ -42,6 +42,8 @@ export async function downloadTT(version: string): Promise<string> {
   // Having verified the version. Download it.
   const filename = getFilename(result.tag_name)
 
+  core.info(`Attempt to retrieve package: ${filename}`)
+
   core.info(`Downloading tt version: ${result.tag_name}`)
   const toolPath = await cache.downloadTool(
     `https://github.com/purpleclay/tt/releases/download/${result.tag_name}/${filename}`
