@@ -91,6 +91,8 @@ const getFilename = (version: string): string => {
       arch = osArch
   }
 
+  core.info(`identified platform ${osPlatform}`)
+
   if (osPlatform == 'windows') {
     extension = 'zip'
   }
