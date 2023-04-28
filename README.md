@@ -15,6 +15,5 @@ This action does not tag your repository.
 
 | Output Name | Description                                              | Type   | Example  |
 | ----------- | -------------------------------------------------------- | ------ | -------- |
-| `full`      | The latest detected version from the current repository. | String | `v1.2.3` |
 | `major`     | The latest major version from the current repository.    | String | `v1`     |
 | `minor`     | The latest minor version from the current repository.    | String | `v1.2`   |
