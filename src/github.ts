@@ -65,6 +65,7 @@ export async function downloadTT(version: string): Promise<string> {
 }
 
 const queryVersion = async (version: string): Promise<GithubTag | null> => {
+  core.info(`token: ${process.env['GITHUB_TOKEN']}`)
   let url = ''
 
   if (version === 'latest') {
