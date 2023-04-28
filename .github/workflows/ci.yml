@@ -28,7 +28,7 @@ jobs:
   ci:
     strategy:
        matrix:
-         os: [ubuntu-latest]
+         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -44,8 +44,8 @@ jobs:
       - name: Install
         run: npm ci
 
-      # - name: Lint
-      #   run: npm run lint
+      - name: Lint
+        run: npm run lint
 
       - name: Test
         run: npm run test

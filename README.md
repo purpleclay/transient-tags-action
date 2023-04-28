@@ -6,9 +6,10 @@ This action does not tag your repository.
 
 ## Action Inputs
 
-| Input Name     | Description                                                                                              | Default Value |
-| -------------- | -------------------------------------------------------------------------------------------------------- | ------------- |
-| `force-semver` | Specify whether explicit semantic versioning is required. Any `v` prefix will automatically be stripped. | `false`       |
+| Input Name     | Description                                                                                              | Default Value  |
+| -------------- | -------------------------------------------------------------------------------------------------------- | -------------- |
+| `token`        | A token for performing authenticated requests to the GitHub API.                                         | `GITHUB_TOKEN` |
+| `force-semver` | Specify whether explicit semantic versioning is required. Any `v` prefix will automatically be stripped. | `false`        |
 
 ## Action Outputs
 

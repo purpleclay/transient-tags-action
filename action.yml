@@ -5,6 +5,9 @@ branding:
   color: "purple"
   icon: "tag"
 inputs:
+  token:
+    description: "a token for performing authenticated requests to the GitHub API"
+    default: ${{ github.token }}
   force-semver:
     description: "set to 'true' if explicit semantic versioning is required"
     required: false
