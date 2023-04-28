@@ -61,7 +61,7 @@ export const queryLatestVersion = async (
   const octokit = github.getOctokit(token)
 
   core.info('Searching Github for latest tt version')
-  const {data: release} = await octokit.rest.repos.getLatestRelease({
+  const { data: release } = await octokit.rest.repos.getLatestRelease({
     owner: 'purpleclay',
     repo: 'tt'
   })

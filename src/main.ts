@@ -34,6 +34,7 @@ async function run(): Promise<void> {
 
     // Download and grab path to the binary
     const path = await installer.downloadTT(latest.tag_name)
+    core.info(`Executing tt at path ${path}`)
     const out = await runTT(path, forceSemVer)
 
     core.setOutput('major', out.Major)
