@@ -19,6 +19,7 @@
 // SOFTWARE.
 
 import * as core from '@actions/core'
+import * as github from '@actions/github'
 import * as client from '@actions/http-client'
 import * as cache from '@actions/tool-cache'
 import * as os from 'os'
@@ -65,23 +66,20 @@ export async function downloadTT(version: string): Promise<string> {
 }
 
 const queryVersion = async (version: string): Promise<GithubTag | null> => {
-  core.info(`token: ${process.env['GITHUB_TOKEN']}`)
-  let url = ''
+  // let url = ''
+  const octokit = github.getOctokit(process.env['GITHUB_TOKEN'] as string)
 
-  if (version === 'latest') {
-    url = 'https://api.github.com/repos/purpleclay/tt/releases/latest'
-  } else {
-    url = `https://api.github.com/repos/purpleclay/tt/releases/tags/${version}`
-  }
-  core.debug(`Identified Github URL for download: ${url}`)
+  // if (version === 'latest') {
+  //   url = 'https://api.github.com/repos/purpleclay/tt/releases/latest'
+  // } else {
+  //   url = `https://api.github.com/repos/purpleclay/tt/releases/tags/${version}`
+  // }
+  // core.debug(`Identified Github URL for download: ${url}`)
 
-  const http = new client.HttpClient('transient-tags-action')
+  //const http = new client.HttpClient('transient-tags-action')
 
-  return (
-    await http.getJson<GithubTag>(url, {
-      Authorization: `Bearer ${process.env['GITHUB_TOKEN']}`
-    })
-  ).result
+  const { data: release } = await octokit.rest.repos.getLatestRelease({ owner: 'purpleclay', repo: 'tt' })
+  return release
 }
 
 const getFilename = (version: string): string => {
