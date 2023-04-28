@@ -52,7 +52,12 @@ export async function downloadTT(version: string): Promise<string> {
   )
   core.debug(`Binary cached at: ${cachePath}`)
 
-  return path.join(cachePath, 'tt')
+  let binary = 'tt'
+  if (osPlatform === 'win32') {
+    binary = 'tt.exe'
+  }
+
+  return path.join(cachePath, binary)
 }
 
 export const queryLatestVersion = async (
