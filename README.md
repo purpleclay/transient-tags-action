@@ -6,14 +6,14 @@ This action does not tag your repository.
 
 ## Action Inputs
 
-| Input Name     | Description                                                                                              | Default Value |
-| -------------- | -------------------------------------------------------------------------------------------------------- | ------------- |
-| `force-semver` | Specify whether explicit semantic versioning is required. Any `v` prefix will automatically be stripped. | `false`       |
+| Input Name     | Description                                                                                              | Default Value  |
+| -------------- | -------------------------------------------------------------------------------------------------------- | -------------- |
+| `token`        | A token for performing authenticated requests to the GitHub API.                                         | `GITHUB_TOKEN` |
+| `force-semver` | Specify whether explicit semantic versioning is required. Any `v` prefix will automatically be stripped. | `false`        |
 
 ## Action Outputs
 
 | Output Name | Description                                              | Type   | Example  |
 | ----------- | -------------------------------------------------------- | ------ | -------- |
-| `full`      | The latest detected version from the current repository. | String | `v1.2.3` |
 | `major`     | The latest major version from the current repository.    | String | `v1`     |
 | `minor`     | The latest minor version from the current repository.    | String | `v1.2`   |

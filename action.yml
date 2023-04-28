@@ -5,12 +5,13 @@ branding:
   color: "purple"
   icon: "tag"
 inputs:
+  token:
+    description: "a token for performing authenticated requests to the GitHub API"
+    default: ${{ github.token }}
   force-semver:
     description: "set to 'true' if explicit semantic versioning is required"
     required: false
 outputs:
-  full:
-    description: "the latest detected version tag e.g. v1.2.3"
   major:
     description: "the latest major tag e.g. v1"
   minor:

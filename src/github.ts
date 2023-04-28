@@ -19,7 +19,7 @@
 // SOFTWARE.
 
 import * as core from '@actions/core'
-import * as client from '@actions/http-client'
+import * as github from '@actions/github'
 import * as cache from '@actions/tool-cache'
 import * as os from 'os'
 import * as path from 'path'
@@ -32,55 +32,55 @@ export interface GithubTag {
 }
 
 export async function downloadTT(version: string): Promise<string> {
-  core.info(`🔍 searching Github for tt version: ${version}`)
-  const result = await queryVersion(version)
-  if (!result) {
-    throw new Error(`Cannot download tt version '${version}' from Github`)
-  }
-  core.info(`✅ tt version found: ${result.tag_name}`)
+  const filename = getFilename(version)
+  core.info(`Attempt to retrieve package: ${filename}`)
 
-  // Having verified the version. Download it.
-  const filename = getFilename(result.tag_name)
-
-  core.info(`⬇️ downloading tt version: ${result.tag_name}`)
+  core.info(`Downloading tt version: ${version}`)
   const toolPath = await cache.downloadTool(
-    `https://github.com/purpleclay/tt/releases/download/${result.tag_name}/${filename}`
+    `https://github.com/purpleclay/tt/releases/download/${version}/${filename}`
   )
 
   // Unpack and cache the binary
-  core.info('📦 extracting tt binary from package')
+  core.debug('Extracting tt binary from package')
   const extractPath = await cache.extractTar(toolPath)
-  core.debug(`📁 extracted to: ${extractPath}`)
+  core.debug(`Extracted to: ${extractPath}`)
 
   const cachePath = await cache.cacheDir(
     extractPath,
     'tt',
-    result.tag_name.replace('/^v/', '')
+    version.replace('/^v/', '')
   )
-  core.debug(`🗄️ tt binary cached at: ${cachePath}`)
+  core.debug(`Binary cached at: ${cachePath}`)
 
-  return path.join(cachePath, 'tt')
+  let binary = 'tt'
+  if (osPlatform === 'win32') {
+    binary = 'tt.exe'
+  }
+
+  return path.join(cachePath, binary)
 }
 
-const queryVersion = async (version: string): Promise<GithubTag | null> => {
-  let url = ''
+export const queryLatestVersion = async (
+  token: string
+): Promise<GithubTag | null> => {
+  const octokit = github.getOctokit(token)
 
-  if (version === 'latest') {
-    url = 'https://api.github.com/repos/purpleclay/tt/releases/latest'
-  } else {
-    url = `https://api.github.com/repos/purpleclay/tt/releases/tags/${version}`
-  }
-  core.debug(`🌐 identified Github URL for download: ${url}`)
+  core.info('Searching Github for latest tt version')
+  const { data: release } = await octokit.rest.repos.getLatestRelease({
+    owner: 'purpleclay',
+    repo: 'tt'
+  })
 
-  const http = new client.HttpClient('transient-tags-action')
-
-  return (await http.getJson<GithubTag>(url)).result
+  core.info(`Found latest tt version: ${release.tag_name}`)
+  return release
 }
 
 const getFilename = (version: string): string => {
   // Map the arch to supported values within the github release artifacts
   let arch = ''
   let extension = 'tar.gz'
+  let platform = osPlatform
+
   switch (osArch) {
     case 'x64':
       arch = 'x86_64'
@@ -89,9 +89,10 @@ const getFilename = (version: string): string => {
       arch = osArch
   }
 
-  if (osPlatform == 'windows') {
+  if (platform === 'win32') {
+    platform = 'windows'
     extension = 'zip'
   }
 
-  return `tt_${version.replace(/^v/, '')}_${osPlatform}_${arch}.${extension}`
+  return `tt_${version.replace(/^v/, '')}_${platform}_${arch}.${extension}`
 }

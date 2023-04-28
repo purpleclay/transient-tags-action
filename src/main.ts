@@ -24,14 +24,19 @@ import * as installer from './github'
 
 async function run(): Promise<void> {
   try {
-    const version = core.getInput('version') || 'latest'
+    const token = core.getInput('token')
     const forceSemVer = core.getBooleanInput('force-semver') || false
 
+    const latest = await installer.queryLatestVersion(token)
+    if (!latest) {
+      throw new Error('Cannot find latest tt version on Github')
+    }
+
     // Download and grab path to the binary
-    const path = await installer.downloadTT(version)
+    const path = await installer.downloadTT(latest.tag_name)
+    core.info('Determine transient tags')
     const out = await runTT(path, forceSemVer)
 
-    core.setOutput('full', out.Full)
     core.setOutput('major', out.Major)
     core.setOutput('minor', out.Minor)
   } catch (error) {
@@ -41,18 +46,17 @@ async function run(): Promise<void> {
 }
 
 type Out = {
-  Full: string
   Major: string
   Minor: string
 }
 
 async function runTT(path: string, forceSemVer: boolean): Promise<Out> {
-  const env = {TT_SEMVER: forceSemVer ? '1' : '0', ...process.env}
+  const env = { TT_SEMVER: forceSemVer ? '1' : '0', ...process.env }
 
   // Ensure the output is captured
   let output = ''
 
-  core.info('🏷️ Running tt')
+  core.info('Running tt')
   await exec.exec(`${path}`, [], {
     env,
     listeners: {
@@ -63,7 +67,7 @@ async function runTT(path: string, forceSemVer: boolean): Promise<Out> {
   })
 
   const parts = output.split(',', 3)
-  return {Full: parts[0], Major: parts[1], Minor: parts[2]}
+  return { Major: parts[1], Minor: parts[2] }
 }
 
 run()

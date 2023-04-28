@@ -19,47 +19,16 @@
 // SOFTWARE.
 
 import * as exec from '@actions/exec'
-import * as client from '@actions/http-client'
 import * as fs from 'fs'
 import * as github from '../src/github'
 
 describe('Github download tt', () => {
-  test('downloads the latest version', async () => {
-    const path = await github.downloadTT('latest')
-
-    // Query github for the latest tag
-    const http = new client.HttpClient('transient-tags-test')
-    const tag = (
-      await http.getJson<github.GithubTag>(
-        'https://api.github.com/repos/purpleclay/tt/releases/latest'
-      )
-    ).result
-    if (!tag) {
-      throw new Error('Failed to pull latest release from Github')
-    }
-
-    expect(fs.existsSync(path)).toBe(true)
-
-    const actualVersion = await checkVersion(path)
-    expect(actualVersion).toMatch(tag.tag_name)
-  })
-
-  test('downloads a specific version', async () => {
+  test('downloads the specified version', async () => {
     const path = await github.downloadTT('v0.1.1')
-
     expect(fs.existsSync(path)).toBe(true)
 
     const actualVersion = await checkVersion(path)
     expect(actualVersion).toMatch('v0.1.1')
-  })
-
-  test('throws error with unrecognised version', async () => {
-    try {
-      await github.downloadTT('A.B.C')
-    } catch (error) {
-      const err = error as Error
-      expect(err.message).toBe("Cannot download tt version 'A.B.C' from Github")
-    }
   })
 })
 
