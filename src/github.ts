@@ -19,7 +19,7 @@
 // SOFTWARE.
 
 import * as core from '@actions/core'
-import { context, getOctokit } from '@actions/github'
+import {context, getOctokit} from '@actions/github'
 import * as cache from '@actions/tool-cache'
 import * as os from 'os'
 import * as path from 'path'
@@ -66,7 +66,7 @@ export const queryLatestVersion = async (
   const octokit = getOctokit(token)
 
   core.info('Searching Github for latest tt version')
-  const { data: release } = await octokit.rest.repos.getLatestRelease({
+  const {data: release} = await octokit.rest.repos.getLatestRelease({
     owner: 'purpleclay',
     repo: 'tt'
   })
@@ -135,7 +135,9 @@ async function createTransientTag(token: string, tag: string): Promise<void> {
 }
 
 async function moveTransientTag(token: string, tag: string): Promise<void> {
-  core.info(`Attempting to move existing transient tag ${tag} to sha ${context.sha}`)
+  core.info(
+    `Attempting to move existing transient tag ${tag} to sha ${context.sha}`
+  )
   const octokit = getOctokit(token)
   const ref = await octokit.rest.git.updateRef({
     owner: context.repo.owner,

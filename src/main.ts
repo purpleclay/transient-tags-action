@@ -20,7 +20,7 @@
 
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
-import { downloadTT, queryLatestVersion, transientTag } from './github'
+import {downloadTT, queryLatestVersion, transientTag} from './github'
 
 async function run(): Promise<void> {
   try {
@@ -36,7 +36,9 @@ async function run(): Promise<void> {
     const path = await downloadTT(latest.tag_name)
     const out = await runTT(path, forceSemVer)
 
-    core.info(`Identified transient tags, major: ${out.Major} minor: ${out.Minor}`)
+    core.info(
+      `Identified transient tags, major: ${out.Major} minor: ${out.Minor}`
+    )
     core.setOutput('major', out.Major)
     core.setOutput('minor', out.Minor)
 
@@ -55,7 +57,7 @@ type Out = {
 }
 
 async function runTT(path: string, forceSemVer: boolean): Promise<Out> {
-  const env = { TT_SEMVER: forceSemVer ? '1' : '0', ...process.env }
+  const env = {TT_SEMVER: forceSemVer ? '1' : '0', ...process.env}
 
   // Ensure the output is captured
   let output = ''
@@ -66,11 +68,11 @@ async function runTT(path: string, forceSemVer: boolean): Promise<Out> {
         output += buffer
       }
     },
-    silent: true,
+    silent: true
   })
 
   const parts = output.split(',', 3)
-  return { Major: parts[1], Minor: parts[2] }
+  return {Major: parts[1], Minor: parts[2]}
 }
 
 run()
