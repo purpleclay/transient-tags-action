@@ -20,25 +20,29 @@
 
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
-import * as installer from './github'
+import {downloadTT, queryLatestVersion, transientTag} from './github'
 
 async function run(): Promise<void> {
   try {
     const token = core.getInput('token')
     const forceSemVer = core.getBooleanInput('force-semver') || false
 
-    const latest = await installer.queryLatestVersion(token)
+    const latest = await queryLatestVersion(token)
     if (!latest) {
       throw new Error('Cannot find latest tt version on Github')
     }
 
     // Download and grab path to the binary
-    const path = await installer.downloadTT(latest.tag_name)
-    core.info('Determine transient tags')
-    const out = await runTT(path, forceSemVer)
+    const path = await downloadTT(latest.tag_name)
 
+    core.info('Identify transient tags from latest repository tag')
+    const out = await runTT(path, forceSemVer)
     core.setOutput('major', out.Major)
     core.setOutput('minor', out.Minor)
+
+    core.info('Tagging repository with transient tags')
+    await transientTag(token, out.Major)
+    await transientTag(token, out.Minor)
   } catch (error) {
     const err = error as Error
     core.setFailed(err.message)
@@ -51,7 +55,7 @@ type Out = {
 }
 
 async function runTT(path: string, forceSemVer: boolean): Promise<Out> {
-  const env = { TT_SEMVER: forceSemVer ? '1' : '0', ...process.env }
+  const env = {TT_SEMVER: forceSemVer ? '1' : '0', ...process.env}
 
   // Ensure the output is captured
   let output = ''
@@ -67,7 +71,7 @@ async function runTT(path: string, forceSemVer: boolean): Promise<Out> {
   })
 
   const parts = output.split(',', 3)
-  return { Major: parts[1], Minor: parts[2] }
+  return {Major: parts[1], Minor: parts[2]}
 }
 
 run()
