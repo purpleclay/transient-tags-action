@@ -19,7 +19,7 @@
 // SOFTWARE.
 
 import * as core from '@actions/core'
-import * as github from '@actions/github'
+import {context, getOctokit} from '@actions/github'
 import * as cache from '@actions/tool-cache'
 import * as os from 'os'
 import * as path from 'path'
@@ -63,10 +63,10 @@ export async function downloadTT(version: string): Promise<string> {
 export const queryLatestVersion = async (
   token: string
 ): Promise<GithubTag | null> => {
-  const octokit = github.getOctokit(token)
+  const octokit = getOctokit(token)
 
   core.info('Searching Github for latest tt version')
-  const { data: release } = await octokit.rest.repos.getLatestRelease({
+  const {data: release} = await octokit.rest.repos.getLatestRelease({
     owner: 'purpleclay',
     repo: 'tt'
   })
@@ -95,4 +95,57 @@ const getFilename = (version: string): string => {
   }
 
   return `tt_${version.replace(/^v/, '')}_${platform}_${arch}.${extension}`
+}
+
+export async function transientTag(token: string, tag: string): Promise<void> {
+  const octokit = getOctokit(token)
+
+  let ref
+  try {
+    ref = await octokit.rest.git.getRef({
+      owner: context.repo.owner,
+      ref: `tags/${tag}`,
+      repo: context.repo.repo
+    })
+  } catch {
+    // Deliberately do nothing...
+  }
+
+  if (ref) {
+    return await moveTransientTag(token, tag)
+  }
+
+  return await createTransientTag(token, tag)
+}
+
+async function createTransientTag(token: string, tag: string): Promise<void> {
+  core.info(`Attempting to create transient tag ${tag}`)
+  const octokit = getOctokit(token)
+  const ref = await octokit.rest.git.createRef({
+    owner: context.repo.owner,
+    ref: `refs/tags/${tag}`,
+    repo: context.repo.repo,
+    sha: context.sha
+  })
+
+  core.info(
+    `Successfully created transient tag ${tag} at sha ${ref.data.object.sha}`
+  )
+  return
+}
+
+async function moveTransientTag(token: string, tag: string): Promise<void> {
+  core.info(`Attempting to move existing transient tag ${tag}`)
+  const octokit = getOctokit(token)
+  const ref = await octokit.rest.git.updateRef({
+    owner: context.repo.owner,
+    ref: `refs/tags/${tag}`,
+    repo: context.repo.repo,
+    sha: context.sha
+  })
+
+  core.info(
+    `Successfully moved transient tag ${tag} to sha ${ref.data.object.sha}`
+  )
+  return
 }
