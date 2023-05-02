@@ -119,7 +119,7 @@ export async function transientTag(token: string, tag: string): Promise<void> {
 }
 
 async function createTransientTag(token: string, tag: string): Promise<void> {
-  core.info(`Attempting to create transient tag ${tag}`)
+  core.info(`Attempting to create transient tag ${tag} at sha ${context.sha}`)
   const octokit = getOctokit(token)
   const ref = await octokit.rest.git.createRef({
     owner: context.repo.owner,
@@ -135,7 +135,7 @@ async function createTransientTag(token: string, tag: string): Promise<void> {
 }
 
 async function moveTransientTag(token: string, tag: string): Promise<void> {
-  core.info(`Attempting to move existing transient tag ${tag}`)
+  core.info(`Attempting to move existing transient tag ${tag} to sha ${context.sha}`)
   const octokit = getOctokit(token)
   const ref = await octokit.rest.git.updateRef({
     owner: context.repo.owner,
