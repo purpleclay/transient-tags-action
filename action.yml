@@ -8,8 +8,10 @@ inputs:
   token:
     description: "a token for performing authenticated requests to the GitHub API"
     default: ${{ github.token }}
+    required: false
   force-semver:
     description: "set to 'true' if explicit semantic versioning is required"
+    default: "false"
     required: false
 outputs:
   major:

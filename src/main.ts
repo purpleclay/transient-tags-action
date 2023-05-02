@@ -20,12 +20,12 @@
 
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
-import {downloadTT, queryLatestVersion, transientTag} from './github'
+import { downloadTT, queryLatestVersion, transientTag } from './github'
 
 async function run(): Promise<void> {
   try {
     const token = core.getInput('token')
-    const forceSemVer = core.getBooleanInput('force-semver') || false
+    const forceSemVer = core.getBooleanInput('force-semver')
 
     const latest = await queryLatestVersion(token)
     if (!latest) {
@@ -55,7 +55,7 @@ type Out = {
 }
 
 async function runTT(path: string, forceSemVer: boolean): Promise<Out> {
-  const env = {TT_SEMVER: forceSemVer ? '1' : '0', ...process.env}
+  const env = { TT_SEMVER: forceSemVer ? '1' : '0', ...process.env }
 
   // Ensure the output is captured
   let output = ''
@@ -71,7 +71,7 @@ async function runTT(path: string, forceSemVer: boolean): Promise<Out> {
   })
 
   const parts = output.split(',', 3)
-  return {Major: parts[1], Minor: parts[2]}
+  return { Major: parts[1], Minor: parts[2] }
 }
 
 run()
