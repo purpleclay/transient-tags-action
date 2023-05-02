@@ -139,7 +139,7 @@ async function moveTransientTag(token: string, tag: string): Promise<void> {
   const octokit = getOctokit(token)
   const ref = await octokit.rest.git.updateRef({
     owner: context.repo.owner,
-    ref: `refs/tags/${tag}`,
+    ref: `tags/${tag}`,
     repo: context.repo.repo,
     sha: context.sha,
     force: true
