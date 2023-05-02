@@ -34,9 +34,9 @@ async function run(): Promise<void> {
 
     // Download and grab path to the binary
     const path = await downloadTT(latest.tag_name)
-
-    core.info('Identify transient tags from latest repository tag')
     const out = await runTT(path, forceSemVer)
+
+    core.info(`Identified transient tags, major: ${out.Major} minor: ${out.Minor}`)
     core.setOutput('major', out.Major)
     core.setOutput('minor', out.Minor)
 
@@ -59,15 +59,14 @@ async function runTT(path: string, forceSemVer: boolean): Promise<Out> {
 
   // Ensure the output is captured
   let output = ''
-
-  core.info('Running tt')
   await exec.exec(`${path}`, [], {
     env,
     listeners: {
       stdout(buffer) {
         output += buffer
       }
-    }
+    },
+    silent: true,
   })
 
   const parts = output.split(',', 3)
