@@ -13,9 +13,9 @@ inputs:
     required: false
 outputs:
   major:
-    description: "the latest major tag e.g. v1"
+    description: "the latest major tag e.g. v1 or 1 if explicit semantic versioning required"
   minor:
-    description: "the latest minor tag e.g. v1.2"
+    description: "the latest minor tag e.g. v1.2 or 1.2 if explicit semantic versioning required"
 runs:
   using: "node16"
   main: "dist/index.js"
