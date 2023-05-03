@@ -1,8 +1,33 @@
-# GitHub Action for Transient Tags
+# Transient Tags Action
 
-Retrieves the latest version tag from a repository and splits it into parts for use as transient tags. Transient tags are not fixed and should version roll between commits. Typical use cases are for tagging major `v1` and minor `v1.2` versions on Github Actions and Docker Images.
+Retrieves the latest version and splits it into `major` and `minor` transient tags before tagging the repository. Typical use cases are for managing rolling versions on GitHub Actions and Docker Images.
 
-This action does not tag your repository.
+For example, if the latest version were `v1.2.3`, this action would tag the latest commit with a `v1` (_major_) and `v1.2` (_minor_) tag.
+
+## Getting Started
+
+```yaml
+name: release
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Transient Tags
+        uses: purpleclay/transient-tags-action@v1
+```
+
+> `write` permissions are required on the `GITHUB_TOKEN` provided to the action
 
 ## Action Inputs
 
@@ -13,7 +38,7 @@ This action does not tag your repository.
 
 ## Action Outputs
 
-| Output Name | Description                                              | Type   | Example  |
-| ----------- | -------------------------------------------------------- | ------ | -------- |
-| `major`     | The latest major version from the current repository.    | String | `v1`     |
-| `minor`     | The latest minor version from the current repository.    | String | `v1.2`   |
+| Output Name | Description                                           | Type   | Example |
+| ----------- | ----------------------------------------------------- | ------ | ------- |
+| `major`     | The latest major version from the current repository. | String | `v1`    |
+| `minor`     | The latest minor version from the current repository. | String | `v1.2`  |
