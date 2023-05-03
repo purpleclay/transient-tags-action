@@ -27,7 +27,7 @@ jobs:
         uses: purpleclay/transient-tags-action@v1
 ```
 
-> `write` permissions are required on the `GITHUB_TOKEN` provided to the action
+> `contents:write` permissions are required on the `GITHUB_TOKEN` provided to the action
 
 ## Action Inputs
 

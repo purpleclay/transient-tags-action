@@ -24,6 +24,8 @@ on:
     branches:
       - main
   pull_request:
+      branches:
+        - main
 jobs:
   ci:
     strategy:
@@ -49,8 +51,6 @@ jobs:
 
       - name: Test
         run: npm run test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
         run: npm run build
