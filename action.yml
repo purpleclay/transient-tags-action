@@ -1,4 +1,4 @@
-name: "Transient Tags Action"
+name: "Transient Tags"
 description: "GitHub Action to parse the latest tag from a repository into component parts for use as transient tags"
 author: "purpleclay"
 branding:
